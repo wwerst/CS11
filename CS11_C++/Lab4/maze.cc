@@ -1,5 +1,6 @@
 #include <iostream>
 #include "maze.hh"
+#include <assert.h>
 
 using namespace std;
 
@@ -24,13 +25,12 @@ Maze::Maze(const Maze &m){
     // Generate new location instances for start and end
     start = Location(m.getStart().row, m.getStart().col);
     end = Location(m.getEnd().row, m.getEnd().col);
-    // Copy the cells
+    // Copy the cells and walls
     cells = new MazeCell[(2*numRows+1)*(2*numCols+1)];
     for (int r = 0; r < numRows; r++){
         for (int c = 0; c < numCols; c++){
-            MazeCell *cell = 
             cells[getArrayIndex(getCellArrayCoord(r,c))] = m.getCell(r, c);
-            if ()
+            cells[getArrayIndex(getWallArrayCoord(r,c))] = m.ge
         }
     }
 
@@ -42,7 +42,9 @@ Maze::~Maze(){
 }
     
     // Maze assignment operator
-Maze::Maze & operator=(const Maze &m);
+Maze::Maze & operator=(const Maze &m){
+
+}
 
 
 // Returns the number of rows in the maze
@@ -240,18 +242,18 @@ void Maze::print(ostream &os) const{
 }
 
 // Take 2D expanded coordinates and compute the corresponding 1D array index
-int getArrayIndex(const Location &loc) const{
+int Maze::getArrayIndex(const Location &loc) const{
     return (numCol*cellRow) + cellCol;
 }
 
 // Returns the expanded coordinates of the specified cell coordinates
-Location getCellArrayCoord(int cellRow, int cellCol) const{
+Location Maze::getCellArrayCoord(int cellRow, int cellCol) const{
     return Location(cellRow*2 +1, cellCol*2+1);
 }
 
 // Returns the expanded coordinates of the wall on a specific side of
 // a cell given in cell coordinates
-Location getWallArrayCoord(int cellRow, int cellCol,
+Location Maze::getWallArrayCoord(int cellRow, int cellCol,
                             Direction direction) const{
     assert(cellRow >= 0 && cellRow < numRows);
     assert(cellCol >= 0 && cellCol < numCols);
