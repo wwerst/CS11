@@ -46,6 +46,8 @@ enum class Direction {
 
 
 class Maze {
+
+private:
     // The number of rows with cells in them
     int numRows;
     
@@ -60,6 +62,17 @@ class Maze {
     
     // The end of the maze, in cell coordinates
     Location end;
+
+    // Take 2D expanded coordinates and compute the corresponding 1D array index
+    int getArrayIndex(const Location &loc) const;
+
+    // Returns the expanded coordinates of the specified cell coordinates
+    Location getCellArrayCoord(int cellRow, int cellCol) const;
+  
+    // Returns the expanded coordinates of the wall on a specific side of
+    // a cell given in cell coordinates
+    Location getWallArrayCoord(int cellRow, int cellCol,
+                             Direction direction) const;
 
 public:
     // Initialize a new maze of size rows x cols
