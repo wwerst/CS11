@@ -27,11 +27,28 @@ Maze::Maze(const Maze &m){
     end = Location(m.getEnd().row, m.getEnd().col);
     // Copy the cells and walls
     cells = new MazeCell[(2*numRows+1)*(2*numCols+1)];
+    this->clear();
     for (int r = 0; r < numRows; r++){
         for (int c = 0; c < numCols; c++){
-            cells[getArrayIndex(getCellArrayCoord(r,c))] = m.getCell(r, c);
-            cells[getArrayIndex(getWallArrayCoord(r,c))] = m.ge
+            cells[this->getArrayIndex(getCellArrayCoord(r,c))] = m.getCell(r, c);
+            if(m.hasWall(r, c, Direction::WEST)){
+		this->setWall(r, c, Direction::WEST);
+            }
+            if(m.hasWall(r, c, Direction::NORTH)){
+		this->setWall(r, c, Direction::NORTH);
+            }
         }
+        if(m.hasWall(r, numCols-1, Direction::EAST)){
+	    this->setWall(r, numCols-1, Direction::EAST);
+        }
+    }
+    for (int c = 0; c < numCols; c++){
+        if(m.hasWall(numRows-1, c, Direction::SOUTH)){
+            this->setWall(numRows-1, c, Direction::SOUTH);
+        }
+    }
+    if(m.hasWall(numRows-1, numCols-1, Direction::EAST)){
+	this->setWall(numRows-1, numCols-1, Direction::EAST);
     }
 
 }
@@ -42,9 +59,7 @@ Maze::~Maze(){
 }
     
     // Maze assignment operator
-Maze::Maze & operator=(const Maze &m){
 
-}
 
 
 // Returns the number of rows in the maze
@@ -120,7 +135,7 @@ Location Maze::getNeighborCell(int cellRow, int cellCol,
     //Check coordinates in maze bounds
     assert(cellRow >= 0 && cellRow < numRows);
     assert(cellCol >= 0 && cellCol < numCols);
-    switch direction{
+    switch (direction){
         case Direction::NORTH:
             assert(cellRow >= 1);
             return Location(cellRow - 1, cellCol);
@@ -149,25 +164,25 @@ bool Maze::hasWall(int cellRow, int cellCol, Direction direction) const{
 
 // Puts a wall on the specified side of the given cell
 void Maze::setWall(int cellRow, int cellCol, Direction direction){
-    cells[getArrayIndex(getWallArrayCoord(cellRow, cellCol, direction))] == MazeCell::WALL;
+    cells[getArrayIndex(getWallArrayCoord(cellRow, cellCol, direction))] = MazeCell::WALL;
 }
 
 // Removes a wall on the specified side of the given cell
 void Maze::clearWall(int cellRow, int cellCol, Direction direction){
-    cells[getArrayIndex(getWallArrayCoord(cellRow, cellCol, direction))] == MazeCell::EMPTY;
+    cells[getArrayIndex(getWallArrayCoord(cellRow, cellCol, direction))] = MazeCell::EMPTY;
 }
 
 
 // Returns true if the specified maze cell has been visited.
 bool Maze::isVisited(int cellRow, int cellCol) const{
-    Cell *cell = cells[getArrayIndex(getWallArrayCoord(cellRow, cellCol, direction))];
+    MazeCell cell = cells[getArrayIndex(getCellArrayCoord(cellRow, cellCol))];
     return cell == MazeCell::VISITED;
 }
 
 // Changes the cell's value to VISITED
 void Maze::setVisited(int cellRow, int cellCol){
-    Cell *cell = cells[getArrayIndex(getWallArrayCoord(cellRow, cellCol, direction))];
-    cell = MazeCell::VISITED;
+    MazeCell *cell = &cells[getArrayIndex(getCellArrayCoord(cellRow, cellCol))];
+    *cell = MazeCell::VISITED;
 }
 
 
@@ -210,10 +225,10 @@ void Maze::print(ostream &os) const{
                 os << " ";
             }
             //Output cell start or end, else, empty
-            if (cell.getStart() == Location(r, c)){
+            if (getStart() == Location(r, c)){
                 os << " S ";
             }
-            else if (cell.getStart() == Location(r, c)){
+            else if (getEnd() == Location(r, c)){
                 os << " E ";
             }
             else {
@@ -243,7 +258,7 @@ void Maze::print(ostream &os) const{
 
 // Take 2D expanded coordinates and compute the corresponding 1D array index
 int Maze::getArrayIndex(const Location &loc) const{
-    return (numCol*cellRow) + cellCol;
+    return (numCols*loc.row) + loc.col;
 }
 
 // Returns the expanded coordinates of the specified cell coordinates
@@ -258,7 +273,7 @@ Location Maze::getWallArrayCoord(int cellRow, int cellCol,
     assert(cellRow >= 0 && cellRow < numRows);
     assert(cellCol >= 0 && cellCol < numCols);
     Location loc = getCellArrayCoord(cellRow, cellCol);
-    switch direction{
+    switch (direction){
         case Direction::NORTH:
             loc.row--;
             return loc;

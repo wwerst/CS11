@@ -85,7 +85,38 @@ public:
     ~Maze();
     
     // Maze assignment operator
-    Maze & operator=(const Maze &m);
+	Maze & operator=(const Maze &m){
+	    numRows = m.getNumRows();
+	    numCols = m.getNumCols();
+	    // Generate new location instances for start and end
+	    start = Location(m.getStart().row, m.getStart().col);
+	    end = Location(m.getEnd().row, m.getEnd().col);
+	    // Copy the cells and walls
+	    this->clear();
+	    for (int r = 0; r < numRows; r++){
+		for (int c = 0; c < numCols; c++){
+		    cells[this->getArrayIndex(getCellArrayCoord(r,c))] = m.getCell(r, c);
+		    if(m.hasWall(r, c, Direction::WEST)){
+			this->setWall(r, c, Direction::WEST);
+		    }
+		    if(m.hasWall(r, c, Direction::NORTH)){
+			this->setWall(r, c, Direction::NORTH);
+		    }
+		}
+		if(m.hasWall(r, numCols-1, Direction::EAST)){
+		    this->setWall(r, numCols-1, Direction::EAST);
+		}
+	    }
+	    for (int c = 0; c < numCols; c++){
+		if(m.hasWall(numRows-1, c, Direction::SOUTH)){
+		    this->setWall(numRows-1, c, Direction::SOUTH);
+		}
+	    }
+	    if(m.hasWall(numRows-1, numCols-1, Direction::EAST)){
+		this->setWall(numRows-1, numCols-1, Direction::EAST);
+	    }
+            return *this;
+	}
 
 
     // Returns the number of rows in the maze
