@@ -106,8 +106,13 @@ void Maze::clear(){
     
 // Places a wall at every location that can be a wall in the maze
 void Maze::setAllWalls(){
-    for (int r = 0; r < numRows - 1; r++){
-        for (int c = 0; c < numCols - 1; c++){
+    cells[getArrayIndex(getWallArrayCoord(0, 0, Direction::WEST))] = MazeCell::WALL;
+    for (int c = 0; c < numCols; c++){
+        cells[getArrayIndex(getWallArrayCoord(0, c, Direction::NORTH))] = MazeCell::WALL;
+    }
+    for (int r = 0; r < numRows; r++){
+        cells[getArrayIndex(getWallArrayCoord(r, 0, Direction::WEST))] = MazeCell::WALL;
+        for (int c = 0; c < numCols; c++){
             cells[getArrayIndex(getWallArrayCoord(r, c, Direction::SOUTH))] = MazeCell::WALL;
             cells[getArrayIndex(getWallArrayCoord(r, c, Direction::EAST))] = MazeCell::WALL;
         }
@@ -258,7 +263,11 @@ void Maze::print(ostream &os) const{
 
 // Take 2D expanded coordinates and compute the corresponding 1D array index
 int Maze::getArrayIndex(const Location &loc) const{
-    return (numCols*loc.row) + loc.col;
+    
+    int val = ((2*numCols+1)*loc.row) + loc.col;
+    assert (val < (2*numCols+1)*(2*numRows+1));
+    //cout << numRows << " " << numCols << " " << loc.row << " " << loc.col << " " << val << endl;
+    return val;
 }
 
 // Returns the expanded coordinates of the specified cell coordinates

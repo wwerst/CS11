@@ -86,11 +86,16 @@ public:
     
     // Maze assignment operator
 	Maze & operator=(const Maze &m){
+            if (this == &m){
+                return *this;
+            }
 	    numRows = m.getNumRows();
 	    numCols = m.getNumCols();
-	    // Generate new location instances for start and end
-	    start = Location(m.getStart().row, m.getStart().col);
-	    end = Location(m.getEnd().row, m.getEnd().col);
+	    // Set start and end
+	    start = m.getStart();
+	    end = m.getEnd();
+            delete [] cells;
+            cells = new MazeCell[(2*numRows+1)*(2*numCols+1)];
 	    // Copy the cells and walls
 	    this->clear();
 	    for (int r = 0; r < numRows; r++){
