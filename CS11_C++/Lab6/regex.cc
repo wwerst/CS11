@@ -67,13 +67,13 @@ Range RegexOperator::popMatch() {
     return r;
 }
 
-class MatchChar : RegexOperator
+class MatchChar : public RegexOperator
 {
 private:
 	char c;
 public:
-    MatchChar(char c) : RegexOperator(){
-        
+    MatchChar(char c) : RegexOperator() {
+        this->c = c;
     }
     
     bool match(const string &s, Range &r) const{
@@ -89,9 +89,9 @@ public:
     }
     
     
-}
+};
 
-class MatchAny : RegexOperator
+class MatchAny : public RegexOperator
 {
 public:
     MatchAny() : RegexOperator() { }
@@ -106,15 +106,15 @@ public:
 		}
     }
     
-}
+};
 
-class  MatchFromSubset : RegexOperator
+class  MatchFromSubset : public RegexOperator
 {
 private:
 	string chars;
 public:
     MatchFromSubset(string chars) : RegexOperator(){
-        this.chars = chars;
+        this->chars = chars;
     }
     
     bool match(const string &s, Range &r) const{
@@ -129,15 +129,15 @@ public:
     
     }
     
-}
+};
 
-class ExcludeFromSubset : RegexOperator
+class ExcludeFromSubset : public RegexOperator
 {
 private:
 	string chars;
 public:
     ExcludeFromSubset(string chars) : RegexOperator(){
-        this.chars = chars;
+        this->chars = chars;
     }
     
     bool match(const string &s, Range &r) const{
@@ -152,7 +152,7 @@ public:
     
     }
     
-}
+};
 
 vector<RegexOperator *> parseRegex(const string &expr) {
 	vector<RegexOperator *> regexops = vector<RegexOperator *>();
@@ -161,23 +161,23 @@ vector<RegexOperator *> parseRegex(const string &expr) {
 		if (c == '\\'){
 			// Check that the backslash not at end of string, a syntax error
 			if (i+1 < expr.size()){
-				regexops.push_back(MatchChar(expr[i+1]));
+				regexops.push_back(new MatchChar(expr[i+1]));
 			}
 			i++;
 		} else if (c == '.') {
-			regexops.push_back(MatchAny()));
+			regexops.push_back(new MatchAny());
 		} else if (c == '?') {
-			regexops.last().setMinRepeat(0);
+			regexops.back()->setMinRepeat(0);
 		} else if (c == '*') {
-			regexops.last().setMinRepeat(0);
-			regexops.last().setMaxRepeat(-1);
+			regexops.back()->setMinRepeat(0);
+			regexops.back()->setMaxRepeat(-1);
 		} else if (c == '+') {
-			regexops.last().setMinRepeat(1);
-			regexops.last().setMaxRepeat(-1);
+			regexops.back()->setMinRepeat(1);
+			regexops.back()->setMaxRepeat(-1);
 		} else if (c == '[') {
 			// Go to next character
 			i++;
-			string s = '';
+			string s = "";
 			// Check if exclude character
 			bool negate = (expr[i] == '^');
 			if (negate){
@@ -196,12 +196,12 @@ vector<RegexOperator *> parseRegex(const string &expr) {
 				}
 			}
 			if (negate){
-				regexops.push_back(ExcludeFromSubset(s));
+				regexops.push_back(new ExcludeFromSubset(s));
 			} else {
-				regexops.push_back(MatchFromSubset(s));
+				regexops.push_back(new MatchFromSubset(s));
 			}
 		} else {
-			regexops.push_back(MatchChar(c);
+			regexops.push_back(new MatchChar(c));
 		}
 	}
 	return regexops;

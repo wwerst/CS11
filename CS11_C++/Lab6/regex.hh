@@ -60,8 +60,10 @@ class RegexOperator {
 public:
     RegexOperator();
     
+    virtual ~RegexOperator() { };
+    
     // Operation to perform matching
-    pure-virtual bool match(const string &s, Range &r) const;
+    virtual bool match(const string &s, Range &r) const = 0;
     
     // Operations to support optional and repeat operations.
     int getMinRepeat() const;
