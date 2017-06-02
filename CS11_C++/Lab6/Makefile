@@ -1,9 +1,9 @@
-CXXFLAGS = -std=c++14 -Wall
+CXXFLAGS = -std=c++14 -Wall -g
 
 all : test-regex
 
 test-regex : engine.o regex.o testbase.o test-regex.o
-	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -g $^ -o $@ $(LDFLAGS)
 
 clean :
 	rm -f test-regex *.o *~

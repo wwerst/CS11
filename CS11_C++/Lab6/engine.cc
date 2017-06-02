@@ -153,7 +153,7 @@ Range findAtIndex(vector<RegexOperator *> regex, const string &s, int start) {
 
 Range find(vector<RegexOperator *> regex, const string &s){
 	Range range = Range(-1,-1);
-	for (int i = 0; i < s.size(); i++){
+	for (int i = 0; i < (int)s.size(); i++){
 		range = findAtIndex(regex, s, i);
 		if (!(range.start == -1 && range.end == -1)){
 			return range;
@@ -163,5 +163,5 @@ Range find(vector<RegexOperator *> regex, const string &s){
 }
 bool match(vector<RegexOperator *> regex, const string &s){
 	Range foundrange = find(regex, s);
-	return foundrange.start == 0 && foundrange.end == s.size() -1;
+	return (foundrange.start == 0 && foundrange.end == (int)s.size());
 }

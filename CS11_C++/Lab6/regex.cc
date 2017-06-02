@@ -77,7 +77,7 @@ public:
     }
     
     bool match(const string &s, Range &r) const{
-		if (r.start >= s.size()){
+		if (r.start >= (int)s.size()){
 			return false;
 		}
         if (s[r.start] == c){
@@ -97,7 +97,7 @@ public:
     MatchAny() : RegexOperator() { }
     
     bool match(const string &s, Range &r) const{
-		if (r.start >= s.size()){
+		if (r.start >= (int)s.size()){
 			return false;
 		}
         else{
@@ -118,7 +118,7 @@ public:
     }
     
     bool match(const string &s, Range &r) const{
-		if (r.start >= s.size()){
+		if (r.start >= (int)s.size()){
 			return false;
 		}
         if (chars.find(s[r.start]) != string::npos){
@@ -141,7 +141,7 @@ public:
     }
     
     bool match(const string &s, Range &r) const{
-		if (r.start >= s.size()){
+		if (r.start >= (int)s.size()){
 			return false;
 		}
         if (chars.find(s[r.start]) == string::npos){
@@ -156,11 +156,11 @@ public:
 
 vector<RegexOperator *> parseRegex(const string &expr) {
 	vector<RegexOperator *> regexops = vector<RegexOperator *>();
-	for (int i = 0; i < expr.size(); i++){
+	for (int i = 0; i < (int)expr.size(); i++){
 		char c = expr[i];
 		if (c == '\\'){
 			// Check that the backslash not at end of string, a syntax error
-			if (i+1 < expr.size()){
+			if (i+1 < (int)expr.size()){
 				regexops.push_back(new MatchChar(expr[i+1]));
 			}
 			i++;
@@ -177,16 +177,18 @@ vector<RegexOperator *> parseRegex(const string &expr) {
 		} else if (c == '[') {
 			// Go to next character
 			i++;
+			assert(i < (int)expr.size());
 			string s = "";
 			// Check if exclude character
 			bool negate = (expr[i] == '^');
 			if (negate){
 				i++;
 			}
-			while (i < expr.size() && expr[i] != ']'){
+			assert(i < (int)expr.size());
+			while (i < (int)expr.size() && expr[i] != ']'){
 				c = expr[i];
 				if (c == '\\'){
-					if (i+1 < expr.size()){
+					if (i+1 < (int)expr.size()){
 						s += expr[i+1];
 					}
 					i++;
@@ -194,6 +196,7 @@ vector<RegexOperator *> parseRegex(const string &expr) {
 				else {
 					s += expr[i];
 				}
+				i++;
 			}
 			if (negate){
 				regexops.push_back(new ExcludeFromSubset(s));
