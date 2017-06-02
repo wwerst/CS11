@@ -151,6 +151,9 @@ Range findAtIndex(vector<RegexOperator *> regex, const string &s, int start) {
     return matched;
 }
 
+/* Checks for the first match in s for regex, else returns Range(-1,-1)
+ * Returns: Range[start,end) of the regex match in s
+ */
 Range find(vector<RegexOperator *> regex, const string &s){
 	Range range = Range(-1,-1);
 	for (int i = 0; i < (int)s.size(); i++){
@@ -161,6 +164,9 @@ Range find(vector<RegexOperator *> regex, const string &s){
 	}
 	return Range(-1, -1);
 }
+
+/* Checks for a perfact match
+ */
 bool match(vector<RegexOperator *> regex, const string &s){
 	Range foundrange = find(regex, s);
 	return (foundrange.start == 0 && foundrange.end == (int)s.size());

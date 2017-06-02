@@ -67,19 +67,25 @@ Range RegexOperator::popMatch() {
     return r;
 }
 
+/* Handles the matching character operation for regex
+ */
 class MatchChar : public RegexOperator
 {
 private:
 	char c;
 public:
+	// Char c is matching character
     MatchChar(char c) : RegexOperator() {
         this->c = c;
     }
     
+	//Match function
     bool match(const string &s, Range &r) const{
+		//Check if at end of string
 		if (r.start >= (int)s.size()){
 			return false;
 		}
+		//Check if character matches
         if (s[r.start] == c){
 			r.end += 1;
 			return true;
@@ -91,15 +97,19 @@ public:
     
 };
 
+/* Handles the match-any operation for regex
+ */
 class MatchAny : public RegexOperator
 {
 public:
     MatchAny() : RegexOperator() { }
     
     bool match(const string &s, Range &r) const{
+		//Check if at end of string
 		if (r.start >= (int)s.size()){
 			return false;
 		}
+		//Else, matches
         else{
 			r.end += 1;
 			return true;
@@ -108,19 +118,25 @@ public:
     
 };
 
+/* Handles the match-subset operation for regex
+ */
 class  MatchFromSubset : public RegexOperator
 {
 private:
 	string chars;
 public:
+	// char is the list of characters that can match
     MatchFromSubset(string chars) : RegexOperator(){
         this->chars = chars;
     }
     
+	//Check for a match
     bool match(const string &s, Range &r) const{
+		//Check if at end of string
 		if (r.start >= (int)s.size()){
 			return false;
 		}
+		//Check if the character at r.start in s is in subset
         if (chars.find(s[r.start]) != string::npos){
 			r.end += 1;
 			return true;
@@ -131,6 +147,8 @@ public:
     
 };
 
+/* Handles the exclude-subset operation for regex
+ */
 class ExcludeFromSubset : public RegexOperator
 {
 private:
@@ -140,10 +158,13 @@ public:
         this->chars = chars;
     }
     
+	//Check for a match
     bool match(const string &s, Range &r) const{
+		//Check if at end of string
 		if (r.start >= (int)s.size()){
 			return false;
 		}
+		//Check if the character at r.start in s is not in subset
         if (chars.find(s[r.start]) == string::npos){
 			r.end += 1;
 			return true;
@@ -185,6 +206,7 @@ vector<RegexOperator *> parseRegex(const string &expr) {
 				i++;
 			}
 			assert(i < (int)expr.size());
+			//Collect all characters in the subset expression
 			while (i < (int)expr.size() && expr[i] != ']'){
 				c = expr[i];
 				if (c == '\\'){
