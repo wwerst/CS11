@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <string>
 #include "Point.hh"
 #include "tsp-ga.hh"
 
@@ -41,6 +42,20 @@ int main(int argc, char *argv[]){
 						keep_num,
 						mutate);
   // Print the distance
+  
+  std::vector<int> shortpathorder = shortpathgenome.getOrder();
+  // Concatenate the shortpathorder vector into a string to display
+  std::string path_str = "[";
+  for (int i = 0; i < (int)shortpathorder.size(); i++){
+    //cout << path_str << endl;
+    path_str = path_str + std::to_string(shortpathorder[i]) + " ";
+  }
+  // Change the last character, a space, into a ]
+  path_str[path_str.length()-1] = ']';
+  
+  // Display the best order and the shortest distance
+  printf("Best order:  %s\n", path_str.c_str());
+  
   double shortpathdist = shortpathgenome.getCircuitLength();
   printf("shortest distance:  %.4f \n",shortpathdist);
 }
