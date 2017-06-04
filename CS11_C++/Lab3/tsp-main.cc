@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
         std::endl << "population - Positive integer specifying population size" <<
         std::endl << "generations - positive integer specifying how many generations"
         << std::endl << "keep_prop - floating-point value in range 0-1" <<
-        std::endl << "mutate - nonnegative floating-point for average number of 	   mutations";
+        std::endl << "mutate - nonnegative floating-point for average number of        mutations";
     return 1;
   }
   int population = atoi(argv[1]);
@@ -38,9 +38,9 @@ int main(int argc, char *argv[]){
   }
   // Find a short length
   TSPGenome shortpathgenome = findAShortPath(points, population,
-					   	generations,
-						keep_num,
-						mutate);
+                        generations,
+                        keep_num,
+                        mutate);
   // Print the distance
   
   std::vector<int> shortpathorder = shortpathgenome.getOrder();

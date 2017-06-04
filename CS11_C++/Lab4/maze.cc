@@ -32,14 +32,14 @@ Maze::Maze(const Maze &m){
         for (int c = 0; c < numCols; c++){
             cells[this->getArrayIndex(getCellArrayCoord(r,c))] = m.getCell(r, c);
             if(m.hasWall(r, c, Direction::WEST)){
-		this->setWall(r, c, Direction::WEST);
+        this->setWall(r, c, Direction::WEST);
             }
             if(m.hasWall(r, c, Direction::NORTH)){
-		this->setWall(r, c, Direction::NORTH);
+        this->setWall(r, c, Direction::NORTH);
             }
         }
         if(m.hasWall(r, numCols-1, Direction::EAST)){
-	    this->setWall(r, numCols-1, Direction::EAST);
+        this->setWall(r, numCols-1, Direction::EAST);
         }
     }
     for (int c = 0; c < numCols; c++){
@@ -48,7 +48,7 @@ Maze::Maze(const Maze &m){
         }
     }
     if(m.hasWall(numRows-1, numCols-1, Direction::EAST)){
-	this->setWall(numRows-1, numCols-1, Direction::EAST);
+    this->setWall(numRows-1, numCols-1, Direction::EAST);
     }
 
 }

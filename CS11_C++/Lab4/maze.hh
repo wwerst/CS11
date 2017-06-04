@@ -85,43 +85,43 @@ public:
     ~Maze();
     
     // Maze assignment operator
-	Maze & operator=(const Maze &m){
+    Maze & operator=(const Maze &m){
             if (this == &m){
                 return *this;
             }
-	    numRows = m.getNumRows();
-	    numCols = m.getNumCols();
-	    // Set start and end
-	    start = m.getStart();
-	    end = m.getEnd();
+        numRows = m.getNumRows();
+        numCols = m.getNumCols();
+        // Set start and end
+        start = m.getStart();
+        end = m.getEnd();
             delete [] cells;
             cells = new MazeCell[(2*numRows+1)*(2*numCols+1)];
-	    // Copy the cells and walls
-	    this->clear();
-	    for (int r = 0; r < numRows; r++){
-		for (int c = 0; c < numCols; c++){
-		    cells[this->getArrayIndex(getCellArrayCoord(r,c))] = m.getCell(r, c);
-		    if(m.hasWall(r, c, Direction::WEST)){
-			this->setWall(r, c, Direction::WEST);
-		    }
-		    if(m.hasWall(r, c, Direction::NORTH)){
-			this->setWall(r, c, Direction::NORTH);
-		    }
-		}
-		if(m.hasWall(r, numCols-1, Direction::EAST)){
-		    this->setWall(r, numCols-1, Direction::EAST);
-		}
-	    }
-	    for (int c = 0; c < numCols; c++){
-		if(m.hasWall(numRows-1, c, Direction::SOUTH)){
-		    this->setWall(numRows-1, c, Direction::SOUTH);
-		}
-	    }
-	    if(m.hasWall(numRows-1, numCols-1, Direction::EAST)){
-		this->setWall(numRows-1, numCols-1, Direction::EAST);
-	    }
+        // Copy the cells and walls
+        this->clear();
+        for (int r = 0; r < numRows; r++){
+        for (int c = 0; c < numCols; c++){
+            cells[this->getArrayIndex(getCellArrayCoord(r,c))] = m.getCell(r, c);
+            if(m.hasWall(r, c, Direction::WEST)){
+            this->setWall(r, c, Direction::WEST);
+            }
+            if(m.hasWall(r, c, Direction::NORTH)){
+            this->setWall(r, c, Direction::NORTH);
+            }
+        }
+        if(m.hasWall(r, numCols-1, Direction::EAST)){
+            this->setWall(r, numCols-1, Direction::EAST);
+        }
+        }
+        for (int c = 0; c < numCols; c++){
+        if(m.hasWall(numRows-1, c, Direction::SOUTH)){
+            this->setWall(numRows-1, c, Direction::SOUTH);
+        }
+        }
+        if(m.hasWall(numRows-1, numCols-1, Direction::EAST)){
+        this->setWall(numRows-1, numCols-1, Direction::EAST);
+        }
             return *this;
-	}
+    }
 
 
     // Returns the number of rows in the maze

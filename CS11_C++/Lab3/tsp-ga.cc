@@ -104,10 +104,10 @@ bool isShorterPath(const TSPGenome &g1, const TSPGenome &g2){
 }
 
 TSPGenome findAShortPath(const std::vector<Point> &points,
-                         	int populationSize,
-                         	int numGenerations,
-				int keepPopulation,
-				int numMutations){
+                            int populationSize,
+                            int numGenerations,
+                int keepPopulation,
+                int numMutations){
   std::vector<TSPGenome> population = std::vector<TSPGenome>();
   for (int i = 0; i < populationSize; i++){
     population.push_back(TSPGenome(points.size()));

@@ -33,8 +33,8 @@ TSPGenome crosslink(const TSPGenome &g1, const TSPGenome &g2);
 bool isShorterPath(const TSPGenome &g1, const TSPGenome &g2);
 
 TSPGenome findAShortPath(const std::vector<Point> &points,
-                         	int populationSize,
-                         	int numGenerations,
-				int keepPopulation,
-				int numMutations);
+                            int populationSize,
+                            int numGenerations,
+                int keepPopulation,
+                int numMutations);
 #endif
