@@ -52,7 +52,7 @@ void test_simple_regex(TestContext &ctx) {
     
     ctx.result();
 
-    clearRegex(regex);
+    // clearRegex(regex);
 }
 
 
@@ -99,7 +99,7 @@ void test_simple_wildcards(TestContext &ctx) {
     
     ctx.result();
 
-    clearRegex(regex);
+    // clearRegex(regex);
 }
 
 
@@ -146,7 +146,7 @@ void test_char_classes(TestContext &ctx) {
 
     ctx.result();
 
-    clearRegex(regex);
+    // clearRegex(regex);
 }
 
 
@@ -193,7 +193,7 @@ void test_inv_char_classes(TestContext &ctx) {
 
     ctx.result();
 
-    clearRegex(regex);
+    // clearRegex(regex);
 }
 
 
@@ -254,7 +254,7 @@ void test_kleene_star(TestContext &ctx) {
 
     ctx.result();
 
-    clearRegex(regex);
+    // clearRegex(regex);
 }
 
 
@@ -317,7 +317,7 @@ void test_plus(TestContext &ctx) {
 
     ctx.result();
 
-    clearRegex(regex);
+    // clearRegex(regex);
 }
 
 
@@ -372,7 +372,7 @@ void test_optional(TestContext &ctx) {
 
     ctx.result();
 
-    clearRegex(regex);
+    // clearRegex(regex);
 }
 
 
@@ -444,7 +444,7 @@ void test_complex_regex(TestContext &ctx) {
 
     ctx.result();
     
-    clearRegex(regex);
+    // clearRegex(regex);
 }
 
 

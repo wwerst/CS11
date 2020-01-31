@@ -59,6 +59,7 @@ class RegexOperator {
     
 public:
     RegexOperator();
+    virtual ~RegexOperator() { }
 
     // Operations to support optional and repeat operations.
     int getMinRepeat() const;
@@ -69,10 +70,44 @@ public:
     // Operations to support backtracking
     void clearMatches();
     void pushMatch(const Range &r);
+    virtual bool match(const string &s, Range &r) const = 0;
     int numMatches() const;
     Range popMatch();
 };
 
+class MatchChar : public RegexOperator {
+public:
+    MatchChar(char c) ;
+    bool match(const string &s, Range &r) const;
+private:
+    char match_char;
+
+};
+
+class MatchAny : public RegexOperator {
+public:
+    MatchAny() ;
+    bool match(const string &s, Range &r) const;
+
+};
+
+class MatchFromSubset : public RegexOperator {
+public:
+    MatchFromSubset(string s) ;
+    bool match(const string &s, Range &r) const;
+private:
+    string chars;
+
+};
+
+class ExcludeFromSubset : public RegexOperator {
+public:
+    ExcludeFromSubset(string s) ;
+    bool match(const string &s, Range &r) const;
+private:
+    string chars;
+
+};
 
 vector<RegexOperator *> parseRegex(const string &expr);
 void clearRegex(vector<RegexOperator *> regex);
