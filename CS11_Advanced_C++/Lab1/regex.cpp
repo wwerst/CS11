@@ -74,7 +74,7 @@ MatchChar::MatchChar(char c) {
 }
 
 bool MatchChar::match(const string &s, Range &r) const {
-    if (s.length() > r.start) {
+    if ((int)s.length() > r.start) {
         if (s[r.start] == match_char) {
             r.end = r.start + 1;
             return true;
@@ -87,7 +87,7 @@ bool MatchChar::match(const string &s, Range &r) const {
 MatchAny::MatchAny() { }
 
 bool MatchAny::match(const string &s, Range &r) const {
-    if (s.length() > r.start) {
+    if ((int)s.length() > r.start) {
         r.end = r.start + 1;
         return true;
     }
@@ -100,7 +100,7 @@ MatchFromSubset::MatchFromSubset(string s) {
 }
 
 bool MatchFromSubset::match(const string &s, Range &r) const {
-    if (s.length() > r.start) {
+    if ((int)s.length() > r.start) {
         if (chars.find(s[r.start]) != string::npos) {
             r.end = r.start + 1;
             return true;
@@ -115,7 +115,7 @@ ExcludeFromSubset::ExcludeFromSubset(string s) {
 }
 
 bool ExcludeFromSubset::match(const string &s, Range &r) const {
-    if (s.length() > r.start) {
+    if ((int)s.length() > r.start) {
         if (chars.find(s[r.start]) == string::npos) {
             r.end = r.start + 1;
             return true;
@@ -129,10 +129,9 @@ bool ExcludeFromSubset::match(const string &s, Range &r) const {
 vector<RegexOperator *> parseRegex(const string &expr) {
     vector<RegexOperator *> regex_ops {};
     bool escaped = false;
-    for (int i = 0; i < expr.length(); i++) {
+    for (size_t i = 0; i < expr.length(); i++) {
         if (escaped) {
-            RegexOperator* match_char = new MatchChar(expr[i]);
-            regex_ops.push_back(match_char);
+            regex_ops.push_back(new MatchChar(expr[i]));
             escaped = false;
         }
         else {
@@ -143,10 +142,7 @@ vector<RegexOperator *> parseRegex(const string &expr) {
                     escaped = true;
                     break;
                 case '.':
-                    {
-                        auto* match_any = new MatchAny();
-                        regex_ops.push_back(match_any);
-                    }
+                    regex_ops.push_back(new MatchAny());
                     break;
                 case '+': // Match previous 1 or more times
                     regex_ops.back()->setMinRepeat(1);
@@ -162,7 +158,7 @@ vector<RegexOperator *> parseRegex(const string &expr) {
                 case '[': // Set operation
                     {
                         bool exclude = false;
-                        string char_set {};
+                        string char_set = "";
                         for (; i < expr.length(); i++) {
                             if (expr[i] == ']') {
                                 break;
@@ -174,17 +170,14 @@ vector<RegexOperator *> parseRegex(const string &expr) {
                             }
                         }
                         if (exclude) {
-                            auto* exclude_set = new ExcludeFromSubset(char_set);
-                            regex_ops.push_back(exclude_set);   
+                            regex_ops.push_back(new ExcludeFromSubset(char_set));   
                         } else {
-                            auto* include_set = new MatchFromSubset(char_set);
-                            regex_ops.push_back(include_set);  
+                            regex_ops.push_back(new MatchFromSubset(char_set));  
                         }
                     }
                     break;
                 default:
-                    auto* match_char = new MatchChar(c);
-                    regex_ops.push_back(match_char);
+                    regex_ops.push_back(new MatchChar(c));
                     break;
             }
         }

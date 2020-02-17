@@ -52,7 +52,7 @@ void test_simple_regex(TestContext &ctx) {
     
     ctx.result();
 
-    // clearRegex(regex);
+    clearRegex(regex);
 }
 
 
@@ -99,7 +99,7 @@ void test_simple_wildcards(TestContext &ctx) {
     
     ctx.result();
 
-    // clearRegex(regex);
+    clearRegex(regex);
 }
 
 

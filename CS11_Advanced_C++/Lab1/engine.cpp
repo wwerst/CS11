@@ -27,7 +27,6 @@ Range findAtIndex(vector<RegexOperator *> regex, const string &s, int start) {
     }
     
     Range matched(start, start);
-
     // Keep track of the parts of the regex we have applied, so that we can
     // figure out what needs backtracking.
     vector<RegexOperator *> applied;
@@ -152,7 +151,7 @@ Range findAtIndex(vector<RegexOperator *> regex, const string &s, int start) {
 }
 
 Range find(vector<RegexOperator *> regex, const string &s) {
-    for (int i = 0; i < s.length(); i++) {
+    for (size_t i = 0; i < s.length(); i++) {
         auto range = findAtIndex(regex, s, i);
         if (range.start != -1 && range.end != -1) {
             return range;
@@ -163,5 +162,12 @@ Range find(vector<RegexOperator *> regex, const string &s) {
 
 bool match(vector<RegexOperator *> regex, const string &s) {
     auto range = find(regex, s);
-    return range.start == 0 && range.end == s.length();
+    return range.start == 0 && (size_t)range.end == s.length();
+}
+
+void clearRegex(vector<RegexOperator *> regex) {
+    // Implementation that was required is not clear from homework...
+    for (size_t i = 0; i < regex.size(); i++) {
+        regex[i]->clearMatches();
+    }
 }
