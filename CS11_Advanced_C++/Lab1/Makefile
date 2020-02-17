@@ -1,23 +1,19 @@
 CXX = g++
 CXXFLAGS = -Wall
+OBJECTS = engine.o regex.o test_regex.o testbase.o
 
 all: test_regex
 
 clean:
-	$(RM) *.o test_regex
+	$(RM) $(OBJECTS) test_regex
 
-test_regex: engine.o regex.o test_regex.o testbase.o
+test_regex: $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ $^
 
 test: test_regex
 	./test_regex
 
-test_regex.o: testbase.o
-
-test_base.o: testbase.h
-
-engine.o: engine.h
-
-regex.o: regex.h
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 .PHONY: all clean
