@@ -150,6 +150,12 @@ Range findAtIndex(vector<RegexOperator *> regex, const string &s, int start) {
     return matched;
 }
 
+/* Find the first match of regex in the string s
+ *
+ * This function iterates through each index in string
+ * and checks for a match starting at that index. If
+ * no match is found, it returns a range of Range(-1, -1).
+ */
 Range find(vector<RegexOperator *> regex, const string &s) {
     for (size_t i = 0; i < s.length(); i++) {
         auto range = findAtIndex(regex, s, i);
@@ -160,14 +166,10 @@ Range find(vector<RegexOperator *> regex, const string &s) {
     return Range(-1, -1);
 }
 
+/* Check if a string exactly matches a regex with all
+ * characters consumed.
+ */
 bool match(vector<RegexOperator *> regex, const string &s) {
     auto range = find(regex, s);
     return range.start == 0 && (size_t)range.end == s.length();
-}
-
-void clearRegex(vector<RegexOperator *> regex) {
-    // Implementation that was required is not clear from homework...
-    for (size_t i = 0; i < regex.size(); i++) {
-        regex[i]->clearMatches();
-    }
 }
