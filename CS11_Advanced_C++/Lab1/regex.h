@@ -75,6 +75,8 @@ public:
     Range popMatch();
 };
 
+/* Match a single given character c in a string.
+ */
 class MatchChar : public RegexOperator {
 public:
     MatchChar(char c) ;
@@ -84,6 +86,8 @@ private:
 
 };
 
+/* Match any single character in a string.
+ */
 class MatchAny : public RegexOperator {
 public:
     MatchAny() ;
@@ -91,6 +95,10 @@ public:
 
 };
 
+/* Match any single character in a string that is
+ * in the given subset of characters passed to this
+ * class at construction of class.
+ */
 class MatchFromSubset : public RegexOperator {
 public:
     MatchFromSubset(string s) ;
@@ -100,6 +108,9 @@ private:
 
 };
 
+/* Match any single character that is not in the
+ * given subset of characters s.
+ */
 class ExcludeFromSubset : public RegexOperator {
 public:
     ExcludeFromSubset(string s) ;
