@@ -1,24 +1,23 @@
+CXX = g++
+CXXFLAGS = -Wall
+
 all: test_regex
-.PHONY: all
 
 clean:
-	rm *.o test_regex 2>/dev/null || true
-.PHONY: clean
+	$(RM) *.o test_regex
 
 test_regex: engine.o regex.o test_regex.o testbase.o
-	g++ -Werror=sign-compare -o $@ test_regex.o engine.o regex.o testbase.o
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ $^
 
 test: test_regex
 	./test_regex
 
-test_regex.o: test_regex.cpp testbase.o
-	g++ -Werror=sign-compare  -c test_regex.cpp
+test_regex.o: testbase.o
 
-test_base.o: testbase.cpp testbase.h
-	g++ -Werror=sign-compare -c testbase.cpp
+test_base.o: testbase.h
 
-engine.o: engine.cpp engine.h
-	g++ -Werror=sign-compare -c engine.cpp
+engine.o: engine.h
 
-regex.o: regex.cpp regex.h
-	g++ -Werror=sign-compare -c regex.cpp
+regex.o: regex.h
+
+.PHONY: all clean
