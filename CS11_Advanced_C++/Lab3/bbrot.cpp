@@ -20,6 +20,9 @@ int main(int argc, char **argv) {
 		if (mbp_info.escaped) {
 			update_image(image, mbp_info);
 		}
+		if (i % 100000 == 0) {
+			std::cerr << ".";
+		}
 	}
 	output_image_to_pgm(image, std::cout);
 }
