@@ -1,7 +1,7 @@
 all: bbrot
 
 clean:
-	$(RM) *.o *.pgm bbrot
+	$(RM) *.o bbrot
 
 bbrot: bbrot.o mbrot.o
 	$(CXX) -pthread -O3 -o $@ bbrot.o mbrot.o

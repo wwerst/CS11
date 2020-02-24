@@ -18,7 +18,7 @@ using std::vector;
  */
 class Image {
     //! The actual data for each pixel in the image.
-    vector<int> data;
+    vector<long int> data;
 
     //! The width of the image.
     int width;
@@ -64,12 +64,12 @@ public:
     }
 
     //! Returns the value of the pixel at (x, y).
-    int getValue(int x, int y) const {
+    long int getValue(int x, int y) const {
         return data[indexOf(x, y)];
     }
 
     //! Sets the value of the pixel at (x, y).
-    void setValue(int x, int y, int value) {
+    void setValue(int x, int y, long int value) {
         data[indexOf(x, y)] = value;
     }
 

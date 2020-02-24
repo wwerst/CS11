@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
 	std::default_random_engine rand_engine {};
 	std::uniform_real_distribution<> real_d(-2, 1);
 	std::uniform_real_distribution<> imag_d(-1.5, 1.5);
-	ctpl::thread_pool p(6);
+	ctpl::thread_pool p(12);
 	const size_t batch_count = 1000;
 	std::vector<std::future<MandelbrotPointInfo>> results(batch_count);
 	int num_batches = num_points / batch_count;
@@ -75,17 +75,17 @@ void update_image(Image &image, const MandelbrotPointInfo &info) {
 
 void output_image_to_pgm(const Image &image, std::ostream &os) {
 	// Output the image to the ostream os in grayscale pgm format
-	int max_image_val = 0;
+	long int max_image_val = 0;
 	for (size_t y = 0; y < image.getHeight(); y++) {
 		for (size_t x = 0; x < image.getWidth(); x++) {
 			max_image_val = std::max(max_image_val, image.getValue(x, y));
 		}
 	}
 	os << "P2 " << image.getWidth() << " ";
-	os << image.getHeight() << " 255\n"; 
+	os << image.getHeight() << " 65535\n"; 
 	for (size_t y = 0; y < image.getHeight(); y++) {
 		for (size_t x = 0; x < image.getWidth(); x++) {
-			os << (int)(255*normalize(0, max_image_val, image.getValue(x, y)));
+			os << (int)(65535*normalize(0, max_image_val, image.getValue(x, y)));
 			os << " ";
 		}
 		os << "\n";
