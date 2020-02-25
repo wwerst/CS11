@@ -1,6 +1,5 @@
 #include "bbrot.h"
-#include <iostream>
-#include <cstdlib>
+#include <thread>
 
 int main(int argc, char **argv) {
 	if (argc != 4) {
@@ -16,7 +15,7 @@ int main(int argc, char **argv) {
 	std::uniform_real_distribution<> imag_d(-1.5, 1.5);
 	for (size_t i = 0; i < num_points; i++) {
 		d_complex c {real_d(rand_engine), imag_d(rand_engine)};
-		auto mbp_info = compute_mandelbrot(c, max_iter_count, true);
+		auto mbp_info = *compute_mandelbrot(c, max_iter_count, true);
 		if (mbp_info.escaped) {
 			update_image(image, mbp_info);
 		}
