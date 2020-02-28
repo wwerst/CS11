@@ -1,4 +1,5 @@
 #include "bbrot.h"
+#include "cbqueue.h"
 #include <thread>
 
 int main(int argc, char **argv) {
