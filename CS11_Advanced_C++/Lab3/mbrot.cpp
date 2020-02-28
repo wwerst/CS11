@@ -1,5 +1,9 @@
 #include "mbrot.h"
 
+/* Compute the mandelbrot iteration
+ * and return a shared pointer to
+ * MandelbrotPointInfo.
+ */
 SP_MandelbrotPointInfo compute_mandelbrot(d_complex c, int max_iters,
                                        bool collect_points) {
 	auto mbp_info = std::make_shared<MandelbrotPointInfo>();

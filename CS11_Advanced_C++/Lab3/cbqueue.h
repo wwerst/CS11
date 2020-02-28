@@ -8,16 +8,24 @@
 #include "mbrot.h"
 
 
-// TODO(WHW): Document this
+/* ConcurrentBoundedQueue
+ * A queue that supports thread-safe
+ * concurrent access.
+ */
 class ConcurrentBoundedQueue {
 public:
 
+	/* Initialize a queue with a maximum size of
+	 * max_items.
+	 */
 	ConcurrentBoundedQueue(int max_items) {
 		max_len = max_items;
 	}
 	ConcurrentBoundedQueue(const ConcurrentBoundedQueue &&) = delete;
 	ConcurrentBoundedQueue(const ConcurrentBoundedQueue &) = delete;
 
+	/* Put data in queue. Blocks until data put in queue.
+	 */
 	void put(SP_MandelbrotPointInfo item) {
 		std::unique_lock<std::mutex> lock(mutex);
 		while (deque.size() >= max_len) {
@@ -26,6 +34,8 @@ public:
 		deque.push_back(item);
 		wait_empty.notify_one();
 	}
+	/* Remove data from queue. Blocks until data removed.
+	 */
 	SP_MandelbrotPointInfo get() {
 		std::unique_lock<std::mutex> lock(mutex);
 		while (deque.empty()) {

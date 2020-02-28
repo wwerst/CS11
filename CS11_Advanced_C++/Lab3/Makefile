@@ -1,14 +1,16 @@
+CXX = g++
+CXXFLAGS = -Wall -O3 -pthread
+OBJECTS = bbrot.o mbrot.o
+
 all: bbrot
-.PHONY: all
 
 clean:
-	rm *.o bbrot 2>/dev/null || true
+	$(RM) $(OBJECTS) bbrot
 
-bbrot: bbrot.o mbrot.o
-	g++ -pthread -O3 -o $@ bbrot.o mbrot.o
+bbrot: $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ $^
 
-bbrot.o: bbrot.cpp bbrot.h image.h cbqueue.h
-	g++ -pthread -O3 -c bbrot.cpp
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-mbrot.o: mbrot.cpp mbrot.h image.h
-	g++ -pthread -O3 -c mbrot.cpp
+.PHONY: all clean
