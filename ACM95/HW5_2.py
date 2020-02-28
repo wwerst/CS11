@@ -8,8 +8,8 @@ def iterate(t=1000, dt=0.001):
         [+0.5 + 0.5j,
          -0.5 + 0.5j,
          -0.5 - 0.5j,
-         +0.5 - 0.5j])
-         # dtype=np.clongdouble)
+         +0.5 - 0.5j],
+        dtype=np.clongdouble)
     bug1_pos = []
     for i in range(int(t/dt)):
         bug_dt = np.roll(bug_pos, -1) - bug_pos
