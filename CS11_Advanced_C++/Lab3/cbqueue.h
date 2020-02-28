@@ -12,14 +12,14 @@ class ConcurrentBoundedQueue {
 public:
 
 	ConcurrentBoundedQueue(int max_items) {
-		deque.resize(max_items);
+		max_items = max_items;
 	}
 	ConcurrentBoundedQueue(const ConcurrentBoundedQueue &&) = delete;
 	ConcurrentBoundedQueue(const ConcurrentBoundedQueue &) = delete;
 
 	void put(SP_MandelbrotPointInfo item) {
 		std::unique_lock<std::mutex> lock(mutex);
-		if(deque.size() == deque.max_size()) {
+		while (deque.size() == max_items) {
 			wait_full.wait(lock);
 		}
 		deque.push_back(item);
@@ -27,7 +27,7 @@ public:
 	}
 	SP_MandelbrotPointInfo get() {
 		std::unique_lock<std::mutex> lock(mutex);
-		if(deque.empty()) {
+		while (deque.empty()) {
 			wait_empty.wait(lock);
 		}
 		auto item = deque.front();
@@ -38,6 +38,7 @@ public:
 	std::condition_variable wait_empty;
 	std::condition_variable wait_full;
 private:
+	int max_items;
 	std::deque<SP_MandelbrotPointInfo> deque;
 	std::mutex mutex;
 };

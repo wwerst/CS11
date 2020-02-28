@@ -9,10 +9,12 @@ void generate_bbot_trajectories(int num_points, int max_iters,
 	std::default_random_engine rand_engine {};
 	std::uniform_real_distribution<> real_d(-2, 1);
 	std::uniform_real_distribution<> imag_d(-1.5, 1.5);
-	for (size_t i = 0; i < num_points; i++) {
+	int generated_trajs = 0;
+	while (generated_trajs < num_points) {
 		d_complex c {real_d(rand_engine), imag_d(rand_engine)};
 		auto mbp_info = compute_mandelbrot(c, max_iters, true);
 		if (mbp_info->escaped) {
+			++generated_trajs;
 			queue.put(mbp_info);
 		}
 	}
