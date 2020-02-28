@@ -1,9 +1,11 @@
-import numpy as np
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+import numpy as np
 from copy import deepcopy
 
 
-def iterate(t=1000, dt=0.001):
+def iterate(t=100, dt=0.001):
     bug_pos = np.array(
         [+0.5 + 0.5j,
          -0.5 + 0.5j,
