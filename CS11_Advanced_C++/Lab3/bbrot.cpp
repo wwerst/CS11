@@ -5,7 +5,7 @@
 #include <vector>
 
 void generate_bbot_trajectories(int num_points, int max_iters,
-								ConcurrentBoundedQueue &queue) {
+								std::shared_ptr<ConcurrentBoundedQueue> queue) {
 	std::default_random_engine rand_engine {};
 	std::uniform_real_distribution<> real_d(-2, 1);
 	std::uniform_real_distribution<> imag_d(-1.5, 1.5);
@@ -15,9 +15,10 @@ void generate_bbot_trajectories(int num_points, int max_iters,
 		auto mbp_info = compute_mandelbrot(c, max_iters, true);
 		if (mbp_info->escaped) {
 			++generated_trajs;
-			queue.put(mbp_info);
+			queue->put(mbp_info);
 		}
 	}
+	queue->put(nullptr);
 }
 
 int main(int argc, char **argv) {
@@ -29,30 +30,36 @@ int main(int argc, char **argv) {
 	int num_points = atoi(argv[2]);
 	int max_iters = atoi(argv[3]);
 	int num_threads = atoi(argv[4]);
-	ConcurrentBoundedQueue queue {1000000};
+	auto queue = std::make_shared<ConcurrentBoundedQueue>(1000);
 	Image image { image_size, image_size };
 	std::vector<std::thread> threads;
 	int unallocated_points = num_points;
-	// for (size_t i = 0; i < num_threads; ++i) {
-		// int thread_num_points = std::min((num_points / num_threads), unallocated_points);
-	// std::thread t(generate_bbot_trajectories, num_points, max_iters, &queue);
-		// threads.push_back(std::move(t));
-	// }
-	generate_bbot_trajectories(num_points, max_iters, queue);
-	unallocated_points -= num_points;
+	for (size_t i = 0; i < num_threads; ++i) {
+		int thread_num_points = std::min(1+(num_points / num_threads), unallocated_points);
+		unallocated_points -= thread_num_points;
+		threads.push_back(
+			std::thread(generate_bbot_trajectories, thread_num_points, max_iters, queue));
+	}
 	assert(unallocated_points == 0);
-	for (size_t i = 0; i < num_points; ++i) {
-		auto mbp_info = queue.get();
+	int recv_points = 0;
+	int terminated_threads = 0;
+	while (terminated_threads < num_threads) {
+		auto mbp_info = queue->get();
 		if (mbp_info != nullptr) {
+			++recv_points;
 			update_image(image, mbp_info);
+		} else {
+			++terminated_threads;
 		}
-		if (i % 10000 == 0) {
+		if (recv_points % 1000000 == 0) {
 			std::cerr << ".";
 		}
 	}
-	// for (auto t : threads) {
-	// 	t->join();
-	// }
+	std::cerr << "\n";
+	assert(recv_points == num_points);
+	for (std::thread& t : threads) {
+		t.join();
+	}
 	output_image_to_pgm(image, std::cout);
 }
 

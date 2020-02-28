@@ -4,6 +4,7 @@
 #include <memory>
 #include <mutex>
 
+#include <iostream>
 #include "mbrot.h"
 
 
@@ -12,14 +13,14 @@ class ConcurrentBoundedQueue {
 public:
 
 	ConcurrentBoundedQueue(int max_items) {
-		max_items = max_items;
+		max_len = max_items;
 	}
 	ConcurrentBoundedQueue(const ConcurrentBoundedQueue &&) = delete;
 	ConcurrentBoundedQueue(const ConcurrentBoundedQueue &) = delete;
 
 	void put(SP_MandelbrotPointInfo item) {
 		std::unique_lock<std::mutex> lock(mutex);
-		while (deque.size() == max_items) {
+		while (deque.size() >= max_len) {
 			wait_full.wait(lock);
 		}
 		deque.push_back(item);
@@ -38,7 +39,7 @@ public:
 	std::condition_variable wait_empty;
 	std::condition_variable wait_full;
 private:
-	int max_items;
+	int max_len;
 	std::deque<SP_MandelbrotPointInfo> deque;
 	std::mutex mutex;
 };
