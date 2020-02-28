@@ -1,39 +1,67 @@
 #include "bbrot.h"
-#include "cbqueue.h"
+#include <algorithm>
+#include <cassert>
 #include <thread>
+#include <vector>
 
-int main(int argc, char **argv) {
-	if (argc != 4) {
-		std::cerr << "Incorrect number of arguments, expected ./bbrot image_size samples iter_count\n";
-		exit(1);
-	}
-	int image_size = atoi(argv[1]);
-	int num_points = atoi(argv[2]);
-	int max_iter_count = atoi(argv[3]);
-	Image image { image_size, image_size };
+void generate_bbot_trajectories(int num_points, int max_iters,
+								ConcurrentBoundedQueue &queue) {
 	std::default_random_engine rand_engine {};
 	std::uniform_real_distribution<> real_d(-2, 1);
 	std::uniform_real_distribution<> imag_d(-1.5, 1.5);
 	for (size_t i = 0; i < num_points; i++) {
 		d_complex c {real_d(rand_engine), imag_d(rand_engine)};
-		auto mbp_info = *compute_mandelbrot(c, max_iter_count, true);
-		if (mbp_info.escaped) {
+		auto mbp_info = compute_mandelbrot(c, max_iters, true);
+		if (mbp_info->escaped) {
+			queue.put(mbp_info);
+		}
+	}
+}
+
+int main(int argc, char **argv) {
+	if (argc != 5) {
+		std::cerr << "Incorrect number of arguments, expected ./bbrot image_size samples iter_count num_threads\n";
+		exit(1);
+	}
+	int image_size = atoi(argv[1]);
+	int num_points = atoi(argv[2]);
+	int max_iters = atoi(argv[3]);
+	int num_threads = atoi(argv[4]);
+	ConcurrentBoundedQueue queue {1000000};
+	Image image { image_size, image_size };
+	std::vector<std::thread> threads;
+	int unallocated_points = num_points;
+	// for (size_t i = 0; i < num_threads; ++i) {
+		// int thread_num_points = std::min((num_points / num_threads), unallocated_points);
+	// std::thread t(generate_bbot_trajectories, num_points, max_iters, &queue);
+		// threads.push_back(std::move(t));
+	// }
+	generate_bbot_trajectories(num_points, max_iters, queue);
+	unallocated_points -= num_points;
+	assert(unallocated_points == 0);
+	for (size_t i = 0; i < num_points; ++i) {
+		auto mbp_info = queue.get();
+		if (mbp_info != nullptr) {
 			update_image(image, mbp_info);
 		}
-		if (i % 100000 == 0) {
+		if (i % 10000 == 0) {
 			std::cerr << ".";
 		}
 	}
+	// for (auto t : threads) {
+	// 	t->join();
+	// }
 	output_image_to_pgm(image, std::cout);
 }
+
 
 double normalize(double min, double max, double value) {
 	assert(min < max);
 	return (value - min) / (max - min);
 }
 
-void update_image(Image &image, const MandelbrotPointInfo &info) {
-	for (d_complex p : info.points_in_path) {
+void update_image(Image &image, const SP_MandelbrotPointInfo info) {
+	for (d_complex p : info->points_in_path) {
 		double norm_real = normalize(-2, 1, p.real());
 		double norm_imag = normalize(-1.5, 1.5, p.imag());
 		if (norm_real < 0 || norm_real > 1 || norm_imag < 0 || norm_imag > 1) {
