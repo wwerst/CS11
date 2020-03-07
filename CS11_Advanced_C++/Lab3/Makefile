@@ -1,5 +1,6 @@
 CXX = g++
-CXXFLAGS = -Wall -O3 -pthread
+CXXFLAGS = -Wall -O3 -pthread -g
+PROGRAM = bbrot
 OBJECTS = bbrot.o mbrot.o
 
 all: bbrot
@@ -7,7 +8,7 @@ all: bbrot
 clean:
 	$(RM) $(OBJECTS) bbrot
 
-bbrot: $(OBJECTS)
+$(PROGRAM): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ $^
 
 %.o: %.cpp

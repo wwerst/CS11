@@ -5,14 +5,13 @@
 #include <mutex>
 
 #include <iostream>
-#include "mbrot.h"
 
 
 /* ConcurrentBoundedQueue
  * A queue that supports thread-safe
  * concurrent access.
  */
-class ConcurrentBoundedQueue {
+template<typename T> class ConcurrentBoundedQueue {
 public:
 
 	/* Initialize a queue with a maximum size of
@@ -26,7 +25,7 @@ public:
 
 	/* Put data in queue. Blocks until data put in queue.
 	 */
-	void put(SP_MandelbrotPointInfo item) {
+	void put(T item) {
 		std::unique_lock<std::mutex> lock(mutex);
 		while (deque.size() >= max_len) {
 			wait_full.wait(lock);
@@ -36,7 +35,7 @@ public:
 	}
 	/* Remove data from queue. Blocks until data removed.
 	 */
-	SP_MandelbrotPointInfo get() {
+	T get() {
 		std::unique_lock<std::mutex> lock(mutex);
 		while (deque.empty()) {
 			wait_empty.wait(lock);
@@ -50,7 +49,7 @@ public:
 	std::condition_variable wait_full;
 private:
 	int max_len;
-	std::deque<SP_MandelbrotPointInfo> deque;
+	std::deque<T> deque;
 	std::mutex mutex;
 };
 
