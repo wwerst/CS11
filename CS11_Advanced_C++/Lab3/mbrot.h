@@ -1,7 +1,8 @@
 #ifndef MBROT_H
 #define MBROT_H
-#include <vector>
 #include <complex>
+#include <memory>
+#include <vector>
 
 using std::complex;
 using std::vector;
@@ -39,8 +40,10 @@ struct MandelbrotPointInfo {
     MandelbrotPointInfo() : escaped{false}, num_iters{0}, max_iters{0} { };
 };
 
+using SP_MandelbrotPointInfo = std::shared_ptr<MandelbrotPointInfo>;
 
-MandelbrotPointInfo compute_mandelbrot(d_complex c, int max_iters,
+
+SP_MandelbrotPointInfo compute_mandelbrot(d_complex c, int max_iters,
                                        bool collect_points = false);
 
 #endif  // MBROT_H
