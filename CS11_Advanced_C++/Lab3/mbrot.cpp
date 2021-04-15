@@ -10,7 +10,7 @@ SP_MandelbrotPointInfo compute_mandelbrot(d_complex c, int max_iters,
 	mbp_info->max_iters = max_iters;
 	size_t i = 0;
 	d_complex z {0, 0};
-	mbp_info->initial_point = z;
+	mbp_info->initial_point = c;
 	for (i = 0; i < max_iters && std::norm(z) < 4; i++) {
 		z = z*z + c;
 		if (collect_points) {

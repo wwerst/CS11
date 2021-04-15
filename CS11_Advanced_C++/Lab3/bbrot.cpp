@@ -17,8 +17,8 @@ void generate_bbot_trajectories(int num_points, int max_iters,
     int generated_trajs = 0;
     while (generated_trajs < num_points) {
         d_complex c {real_d(rand_engine), imag_d(rand_engine)};
-        auto mbp_info = compute_mandelbrot(c, max_iters, true);
-        if (mbp_info->escaped) {
+        auto mbp_info = compute_mandelbrot(c, max_iters, false);
+        if (!mbp_info->escaped) {
             ++generated_trajs;
             queue->put(mbp_info);
         }
@@ -149,18 +149,17 @@ double normalize(double min, double max, double value) {
 /* Update image with new SP_MandelbrotPointInfo
  */
 void update_image(Image &image, const SP_MandelbrotPointInfo info) {
-    for (d_complex p : info->points_in_path) {
-        double norm_real = normalize(-2, 1, p.real());
-        double norm_imag = normalize(-1.5, 1.5, p.imag());
-        if (norm_real < 0 || norm_real > 1 || norm_imag < 0 || norm_imag > 1) {
-            continue;
-        } else {
-            size_t x = norm_real * (image.getWidth()-1);
-            size_t y = norm_imag * (image.getHeight()-1);
-            image.incValue(x, y);
-        }
+    d_complex p = info->initial_point;
+    // for (d_complex p : info->points_in_path) {
+    double norm_real = normalize(-2, 1, p.real());
+    double norm_imag = normalize(-1.5, 1.5, p.imag());
+    if (norm_real < 0 || norm_real > 1 || norm_imag < 0 || norm_imag > 1) {
+    } else {
+        size_t x = norm_real * (image.getWidth()-1);
+        size_t y = norm_imag * (image.getHeight()-1);
+        image.incValue(x, y);
     }
-
+    // }
 }
 
 /* Output image to output stream. This output stream should be
